@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-arm-service
+spec:
+  selector:
+    app: nginx-arm
+  ports:
+  - protocol: "TCP"
+    port: 7000
+    targetPort: 80
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-arm
+  labels:
+    app: nginx-arm
+spec:
+  selector:
+    matchLabels:
+      app: nginx-arm
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: nginx-arm
+    spec:
+      containers:
+      - name: nginx-arm
+        image: nginx-armhf:production
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        
