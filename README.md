@@ -15,19 +15,24 @@ $ docker run -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static --rm -ti arm32
 - Para fazer o build é necessário ter o qemu-arm-static no mesmo diretorio onde será feito o build da imagem 
 
 $ cp /usr/bin/qemu-arm-static .
+
 $ docker build  -t nginx-armhf:testing .
 
 #### Teste local da imagem no x86 
 
 $ docker run --rm -ti -d -p 80:80 nginx-armhf:testing
+
 $ docker ps 
+
 $ firefox localhost
 
 #### Customizando para colocar em produção no ARM 
 - Depois de buildar e verificar se está funcionando, crie novo Dockerfile a partir da primeira imagem criada , que remove o qemu-arm-static e deixa pronto para executar no ARM :
 
 Dockerfile.arm:
+
 FROM nginx-armhf:testing
+
 RUN rm /usr/bin/qemu-arm-static
 
 $ docker build -t nginx-armhf:production -f Dockerfile.arm .
@@ -50,7 +55,7 @@ $ ssh user@remote-arm-server 'sudo /usr/local/bin/k3s ctr images import /tmp/ngi
 #### Verifica se está no cache remoto 
 $ ssh user@remote-arm-server 'sudo /usr/local/bin/k3s crictl images | grep nginx-armhf:production'
 
-### Apos é só colocar em uso em deployments para o kubernetes como no exemplo do arquivo deste repositorio deployment.yaml 
+#### Apos é só colocar em uso em deployments para o kubernetes como no exemplo do arquivo deste repositorio deployment.yaml 
 
 - O comando pode ser executado no proprio servidor ARM ou na maquina local do usuario desde que tenha o kubectl instalado e possua o arquivo de configuração com as credenciais do cluster k3s
 
